@@ -20,7 +20,7 @@ It saves all generated thumbs in a cache directory under "uploads" folder.
 
 Installation
 
-Just donwload the zip file, upload it to your wordpress vía install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated the plugin is ready to be used by calling its main function (see “Usage” section below).
+Just donwload the zip file, upload it to your wordpress via install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated the plugin is ready to be used by calling its main function (see "Usage" section below).
 
 To use this function you just need to use this line with a few parameters:
 
