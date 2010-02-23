@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== thumbGen ===
 Contributors: sebastianbarria
 Donate link: http://www.sebastianbarria.com/
 Tags: thumb,generator,thumbnail,cache
