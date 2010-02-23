@@ -40,7 +40,7 @@ To use this function you just need to use this line with a few parameters:
 
 == Frequently Asked Questions ==
 
-= ¿Where do I get more information? =
+= Where do I get more information? =
 
 [In the plugin page](http://www.sebastianbarria.com/thumbgen/ "Your favorite software")
 
@@ -62,7 +62,7 @@ This is the first release
 
 == Examples of usage ==
 
-In this example I’ll not explain detailed how this Wordpress code works, but I’ll show this as an example of this plugin usage:
+In this example I'll not explain detailed how this Wordpress code works, but I'll show this as an example of this plugin usage:
 
 `
 <?php
@@ -85,4 +85,4 @@ if(!empty($img)){
 ?>
 `
 
-This example reads the first attached image of a post and save it’s information in a variable called $img. In the thumbGen function the first parameter is $img[0] and that’s the image URL. The second and third parameters are the width and height of the generated thumbnail we need. The rest of the parameters are the crop, center and grayscale options.
+This example reads the first attached image of a post and save it's information in a variable called $img. In the thumbGen function the first parameter is $img[0] and that's the image URL. The second and third parameters are the width and height of the generated thumbnail we need. The rest of the parameters are the crop, center and grayscale options.
