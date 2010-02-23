@@ -4,7 +4,7 @@ Donate link: http://www.sebastianbarria.com/
 Tags: thumb,generator,thumbnail,cache
 Requires at least: 2.9.0
 Tested up to: 2..9.2
-Stable tag: trunk
+Stable tag: 1.0
 
 Here is a short description of the plugin.  This should be no more than 150 characters.  No markup here.
 
