@@ -1,6 +1,6 @@
 === thumbGen ===
 Contributors: sebastianbarria
-Donate link: http://www.sebastianbarria.com/
+Donate link: http://www.sebastianbarria.com/thumbgen/
 Tags: thumb,generator,thumbnail,cache,image,manipulation,developer
 Requires at least: 2.9.0
 Tested up to: 2..9.2
