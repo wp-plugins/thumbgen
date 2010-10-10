@@ -1,9 +1,9 @@
 === thumbGen ===
 Contributors: sebastianbarria
-Donate link: http://www.sebastianbarria.com/
-Tags: thumb,generator,thumbnail,cache
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A799JB6J57938
+Tags: image,images,thumb,generator,thumbnail,developers,cache
 Requires at least: 2.9.0
-Tested up to: 2.9.2
+Tested up to: 3.0.1
 Stable tag: trunk
 
 This plugin creates (automatically) thumbnails from any image. Is optimized because saves the thumbs into a cache folder.
@@ -12,7 +12,7 @@ This plugin creates (automatically) thumbnails from any image. Is optimized beca
 
 This plugin is made for developers.
 
-It creates a function called thumbGen() that allows to show any image in the specified size. Additionally you can specify the way it crops the image and you can generate it in grayscale.
+It creates a function named thumbGen() that allows to show any image in the specified size. Additionally you can specify the way it crops the image and you can generate it in grayscale.
 
 It saves all generated thumbs in a cache folder.
 
@@ -20,7 +20,7 @@ It saves all generated thumbs in a cache folder.
 
 Installation
 
-Just donwload the zip file, upload it to your wordpress vía install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated the plugin is ready to be used by calling its main function (see “Usage” section below).
+Just donwload the zip file, upload it to your wordpress via install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated the plugin is ready to be used by calling its main function (see "Usage" section below).
 
 To use this function you just need to use this line with a few parameters:
 
@@ -43,7 +43,7 @@ proportional value from the specified height).
 
 == Frequently Asked Questions ==
 
-= ¿Where do I get more information? =
+= Where do I get more information? =
 
 [In the plugin page](http://www.sebastianbarria.com/thumbgen/ "Your favorite software")
 
@@ -59,15 +59,18 @@ There's no screenshots, since this function create thumbnails...how could I get 
 * Clear cache option
 * Default image specification (to show if the image doesn't exists)
 * thumGen is able to open files from anywhere (your own site and from other ones too!)
+* Full support for image transparency
 * Is not required to send any parameter other than the image name (all have default values)
 * New parameter "return", to select if the image name is printed or returned
+* Documentation updated
+* Donation button added (try it!)
 
 = 1.0 =
 * This is the first release
 
 == Examples of usage ==
 
-In this example I’ll not explain detailed how this Wordpress code works, but I’ll show this as an example of this plugin usage:
+In this example I will not explain detailed how this Wordpress code works, but I will show this as an example of this plugin usage:
 
 `
 <?php
@@ -90,5 +93,5 @@ if(!empty($img)){
 ?>
 `
 
-This example reads the first attached image of a post and save it’s information in a variable called $img. In the thumbGen function the first parameter is $img[0] and that’s the image URL. The second and third parameters are the width and height of the generated thumbnail we need. The rest of the parameters will use the default values.
+This example reads the first attached image of a post and save it's information in a variable called $img. In the thumbGen function the first parameter is $img[0] and that's the image URL. The second and third parameters are the width and height of the generated thumbnail we need. The rest of the parameters will use the default values.
 

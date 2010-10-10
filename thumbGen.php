@@ -2,7 +2,7 @@
 /*
 Plugin Name: thumbGen
 Plugin URI: http://www.sebastianbarria.com/thumbgen/
-Description: This plugin create a function called thumbGen() that allow to show any image in the specified size. It saves all generated thumbs in a cache directory under uploads.
+Description: This plugin create a function named thumbGen() that allow to show any image in the specified size. It saves all generated thumbs in a cache directory under uploads.
 Author: Sebastián Barría
 Version: 2.0
 Author URI: http://www.sebastianbarria.com/
@@ -230,5 +230,15 @@ function thumbgen_options_page(){
 		</table>
 		<p class="submit"><input type="submit" class="button-primary" value="<?php _e("Save Changes"); ?>"></p>
 	</form>
+	<fieldset>
+		<legend>Donations</legend>
+		<p>Your donations will be allways appreciated!</p>
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+			<input type="hidden" name="cmd" value="_s-xclick">
+			<input type="hidden" name="hosted_button_id" value="A799JB6J57938">
+			<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+			<img alt="" border="0" src="https://www.paypal.com/es_XC/i/scr/pixel.gif" width="1" height="1">
+		</form>
+	</fieldset>
 </div>
 <?php } ?>
