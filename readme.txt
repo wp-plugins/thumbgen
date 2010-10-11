@@ -53,6 +53,10 @@ There's no screenshots, since this function create thumbnails...how could I get 
 
 == Changelog ==
 
+= 2.1 =
+* Documentation updated
+* Donation button added (try it!)
+
 = 2.0 =
 * New settings page!!!
 * Cache folder specification (if not exist, the plugin creates it)
@@ -62,8 +66,6 @@ There's no screenshots, since this function create thumbnails...how could I get 
 * Full support for image transparency
 * Is not required to send any parameter other than the image name (all have default values)
 * New parameter "return", to select if the image name is printed or returned
-* Documentation updated
-* Donation button added (try it!)
 
 = 1.0 =
 * This is the first release
