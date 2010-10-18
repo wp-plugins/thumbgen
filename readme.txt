@@ -1,0 +1,120 @@
+=== thumbGen ===
+Contributors: sebastianbarria
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A799JB6J57938
+Tags: image,images,thumb,generator,thumbnail,developers,cache
+Requires at least: 2.9.0
+Tested up to: 3.0.1
+Stable tag: trunk
+
+This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.\nATTENTION: If you're upgrading from older version it will probable need you to do some fixes in the code. Please refer to the documentation at http://www.sebastianbarria.com/thumbgen/
+
+== Description ==
+
+This plugin is made for developers. It creates a function named thumbGen() that allows to show any image in the specified size. Additionally you can specify values like crop, center, rotation and effects.
+
+It saves all generated thumbs in a cache folder, so it won't overload your server at all.
+
+== Installation ==
+
+Installation
+
+Just donwload the zip file, upload it to your wordpress via install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated the plugin is ready to be used by calling its main function (see "Usage" section below).
+
+To use this function you just need to use this line code:
+
+`<?php thumbGen(image,width,height,additional_parameters); ?>`
+
+[image:] the URL of the original image you need to create a thumbnail from (needed).
+
+[width:] the width you need for the generated thumbnail (optional - default=0 - if not specified it gets the 
+proportional value from the specified height).
+
+[height:] the height you need for the generated thumbnail (optional - default=0 - if not specified it gets the proportional value from the specified width).
+
+note: if you don't specify the with AND height (or if you set both to 0), the image will be generated in the source size.
+
+= Additional parameters =
+[filename:] some people have troubles with duplicated names, so I've added this parameter for you to specify a new filename (or ID or something like that) in order to differentiate each file (if not set it will use the source filename).
+
+[md5:] by default, the images are generated with an md5 encode filename. If you don't want the generated file to have an encoded name set this to 0
+
+[force:] force thumb creation, even if it already exists (default=0) (NOT RECOMENDED! - use it just for testing or debugging)
+
+[crop:] if you want the thumbnail to be cropped (no image deformation) if the width and height are different from the original image, set this value as 1 or true. If you want the content of the thumbnail to be resized to fit the space (image deformation) set this to 0 or false (default=1).
+
+[halign:] horizontal align of the croped image. You can set it to left, center or right (default=center)
+
+[valign:] vertical align of the croped image. You can set it to top, center or bottom (default=center)
+
+[effect:] you can apply two effects: grayscale and sephia
+
+[rotate:] you can specify a rotation angle
+
+[background:] hex color (like #ffffff) to apply on the background ONLY when you rotate the image. If you don't want a color applied you can set this to transparent (default=transparent)
+
+[return:] if set to 1 (or true) the image name will be returned instead of printed (default=0).
+
+== Frequently Asked Questions ==
+
+= Where do I get more information? =
+
+[In the plugin page](http://www.sebastianbarria.com/thumbgen/ "Your favorite software")
+
+== Screenshots ==
+
+There's no screenshots, since this function create thumbnails...how could I get a screenshot of that?
+
+== Changelog ==
+
+= 2.5 =
+* Main function updated!!! (ATTENTION, if you upgrade, maybe it will need to review your code)
+* A lot of new features: rotation, effects, background, halign, valign, etc.
+* The images are now generated with a md5 encoded name by default
+* A new option to force image generation (use only for testing)
+* New option in the config page. Now it ask you if you want to create the folder (if it not exists) instead of just creating
+* Improved check for the selected cache folder in the config page
+* Internal functions renamed to thumbGen_function() for it not to cause problem with other plugins
+
+= 2.1 =
+* Documentation updated
+* Donation button added (try it!)
+
+= 2.0 =
+* New settings page!!!
+* Cache folder specification (if not exist, the plugin creates it)
+* Clear cache option
+* Default image specification (to show if the image doesn't exists)
+* thumGen is able to open files from anywhere (your own site and from other ones too!)
+* Full support for image transparency
+* Is not required to send any parameter other than the image name (all have default values)
+* New parameter "return", to select if the image name is printed or returned
+
+= 1.0 =
+* This is the first release
+
+== Examples of usage ==
+
+In this example I will not explain detailed how this Wordpress code works, but I will show this as an example of this plugin usage:
+
+`
+<?php
+$img="";
+$args = array(
+'post_parent'    => $post->ID,
+'post_type'      => 'attachment',
+'numberposts'    => 1,
+'post_mime_type' => 'image'
+);
+$attachs = get_posts($args);
+if ($attachs) {
+$img=wp_get_attachment_image_src($attachs[0]->ID,'full');
+}
+if(!empty($img)){
+?>
+<img src='<?php thumbGen($img[0],171,56,"effect=grayscale&halign=left&valign=top"); ?>' alt='' />
+<?php
+}
+?>
+`
+
+This example reads the first attached image of a post and save it's information in a variable called $img. In the thumbGen function the first parameter is $img[0] and that's the image URL. The second and third parameters are the width and height of the generated thumbnail we need. The rest of the parameters are defined in the string in the format parameter=value, concatenated with an &. the values not specified will use their default value.
