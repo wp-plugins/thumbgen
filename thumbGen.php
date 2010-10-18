@@ -2,13 +2,28 @@
 /*
 Plugin Name: thumbGen
 Plugin URI: http://www.sebastianbarria.com/thumbgen/
-Description: This plugin create a function named thumbGen() that allow to show any image in the specified size. It saves all generated thumbs in a cache directory under uploads.
+Description: This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.\nATTENTION: If you're upgrading from older version it will probable need you to do some fixes in the code. Please refer to the documentation at http://www.sebastianbarria.com/thumbgen/
 Author: Sebastián Barría
-Version: 2.1
+Version: 2.5
 Author URI: http://www.sebastianbarria.com/
 */
 
-function thumbGen($img,$width=0,$height=0,$crop=1,$centered=1,$grayscale=0,$return=0){
+function thumbGen($img="",$width=0,$height=0,$arguments=""){
+	$allowedArgs=array(
+		"filename"=>"", //if you want to specify a new filename (in case of conflict with similar filenames)
+		"md5"=>"1", //1,0 if you don't want the generated file to have an encoded name set this to 0
+		"force"=>"0", //1,0 force thumb creation, even if it exists (NOT RECOMENDED! - use it just for debugging)
+		"crop"=>"1", //1,0
+		"halign"=>"center", //left,center,right
+		"valign"=>"center", //top,center,bottom
+		"effect"=>"", //grayscale,sephia
+		"rotate"=>"0", //0-360
+		"background"=>"transparent", //background color for use when the image is rotated
+		"return"=>"0", //1,0
+	);
+	$arguments=explode("&",$arguments);
+	$args=thumbGen_setupAllowedArguments($allowedArgs,$arguments);
+
 	$sitePath=$_SERVER['DOCUMENT_ROOT'];
 	$cachePath=get_option('thumbgen_cache_files');
 	$defultImage=get_option('thumbgen_default_image');
@@ -17,17 +32,31 @@ function thumbGen($img,$width=0,$height=0,$crop=1,$centered=1,$grayscale=0,$retu
 	$fileName=$file[count($file)-1];
 	$ext=explode(".",$fileName);
 	$imageExtension=strtolower($ext[count($ext)-1]);
-	if($imageExtension=="jpeg"){ $imageExtension="jpg"; }
-	$imageName=substr($fileName,0,strlen($fileName)-strlen($imageExtension)-1);
-	$fileCache=$cachePath.$imageName."_".$width."_".$height."_".$crop."_".$centered."_".$grayscale.".".$imageExtension;
-	$fileCacheGS=$cachePath.$imageName."_".$width."_".$height."_".$crop."_".$centered."_1.".$imageExtension;
+	if($imageExtension!="png" and $imageExtension!="gif"){ $imageExtension="jpg"; }
+	$imageName=$args['filename']?$args['filename']:substr($fileName,0,strlen($fileName)-strlen($imageExtension)-1);
+	$imageName=$imageName."_".$width."_".$height."_".implode("_",$allowedArgs);
+	if($args['md5']==1){ $imageName=md5($imageName); }
+	$fileCache=$cachePath.$imageName.".".$imageExtension;
+	$fileCacheGS=$cachePath.$imageName.".".$imageExtension;
 	
-	if(!is_readable($sitePath.$fileCache)){
+	if(!is_readable($sitePath.$fileCache) or $args['force']){
 		$openImage=substr($img,0,1)=="/"?$sitePath.$img:$img;
-		$image = open_image($openImage);
+		$image = thumbGen_openImage($openImage);
 		if(!$image){
-			if($defultImage){ $image = open_image($defultImage); }
+			if($defultImage){ $image = thumbGen_openImage($defultImage); }
 			else{ $image = imagecreatetruecolor($width, $height);}
+		}
+		else{
+			if($args['rotate']){
+				if($args['background']!="transparent"){
+					$bgColor=thumbGen_hexToRGB($args['background']);
+					$bg = imagecolorallocatealpha($image, $bgColor[0], $bgColor[1], $bgColor[2], 127);
+					$image=imagerotate($image,$args['rotate'],$bg);
+				}
+				else{
+					$image=imagerotate($image,$args['rotate'],-1);
+				}
+			}
 		}
 
 		$x=@imagesx($image);
@@ -43,7 +72,7 @@ function thumbGen($img,$width=0,$height=0,$crop=1,$centered=1,$grayscale=0,$retu
 			
 		$newProportion=$width/$height;
 		$originalProportion=$x/$y;
-		if($crop){
+		if($args['crop']){
 			if($newProportion>$originalProportion){
 				$px=$x;
 				$percentage=$width*100/$x;
@@ -58,31 +87,39 @@ function thumbGen($img,$width=0,$height=0,$crop=1,$centered=1,$grayscale=0,$retu
 				$percentage=$height*100/$y;
 				$px=round($width/$percentage*100);
 			}
-				
-			if($centered){
-				$offsetx=round(($x-$px)/2);
-				$offsety=round(($y-$py)/2);
-			}
+			
+			//alignment	
+			if($args['halign']=="left"){ $offsetx=0; }
+			else if($args['halign']=="right"){ $offsetx=round(($x-$px)); }
+			else{ $offsetx=round(($x-$px)/2); }
+			
+			if($args['valign']=="top"){ $offsety=0; }
+			else if($args['valign']=="bottom"){ $offsety=round(($y-$py)); }
+			else{ $offsety=round(($y-$py)/2); }
 		}
 		
-		//generar imagen normal
+		//generate image
 		$newImage = imagecreatetruecolor($width, $height);
 		$alpha=$imageExtension!="jpg"?127:0;
-		$white = imagecolorallocatealpha($newImage, 255, 255, 255, $alpha);
-		imagefill($newImage,0,0,$white);
-		if($imageExtension=="png"){
-			imagealphablending($newImage, false);
-			imagesavealpha($newImage, true);
-		}
-		if($imageExtension=="gif"){
-			imagecolortransparent($newImage,$white);
+		if(!$bgColor){ $bgColor=thumbGen_hexToRGB($args['background']); }
+		$bg = imagecolorallocatealpha($newImage, $bgColor[0], $bgColor[1], $bgColor[2], $alpha);
+		imagefill($newImage,0,0,$bg);
+		if($args['background']=="transparent" or !$args['rotate']){
+			if($imageExtension=="png"){
+				imagealphablending($newImage, false);
+				imagesavealpha($newImage, true);
+			}
+			if($imageExtension=="gif"){
+				imagecolortransparent($newImage,$bg);
+			}
 		}
 		imagecopyresampled($newImage, $image, 0, 0, $offsetx, $offsety, $width, $height, $px, $py);
 		if($imageExtension=="png"){ imagepng($newImage,$sitePath.$fileCache,7); }
 		else if($imageExtension=="gif"){ imagegif($newImage,$sitePath.$fileCache); }
 		else{ imagejpeg($newImage,$sitePath.$fileCache,90); }
-		if($grayscale){
+		if($args['effect']=="grayscale" or $args['effect']=="sephia"){
 			imagefilter($newImage,IMG_FILTER_GRAYSCALE);
+			if($args['effect']=="sephia"){ imagefilter($newImage,IMG_FILTER_COLORIZE,100,50,0); }
 			if($imageExtension=="png"){ imagepng($newImage,$sitePath.$fileCacheGS,7); }
 			else if($imageExtension=="gif"){ imagegif($newImage,$sitePath.$fileCacheGS); }
 			else{ imagejpeg($newImage,$sitePath.$fileCacheGS,90); }
@@ -92,10 +129,33 @@ function thumbGen($img,$width=0,$height=0,$crop=1,$centered=1,$grayscale=0,$retu
 	
 	if($grayscale){ $fileCache=$fileCacheGS; }	
 
-	if(!$return){ echo $fileCache; }
+	if(!$args['return']){ echo $fileCache; }
 	else{ return $fileCache; }
 }
-function open_image ($file) {
+function thumbGen_hexToRGB($color){
+	if ($color[0] == '#'){ $color = substr($color, 1); }
+	
+	if (strlen($color) == 6){ list($r, $g, $b) = array($color[0].$color[1],$color[2].$color[3],$color[4].$color[5]); }
+	else if (strlen($color) == 3) { list($r, $g, $b) = array($color[0].$color[0], $color[1].$color[1], $color[2].$color[2]); }
+	else { return false; }	
+	
+	$r = hexdec($r); $g = hexdec($g); $b = hexdec($b);
+	return array($r, $g, $b);
+}
+function thumbGen_setupAllowedArguments($argsPermitidos,$argumentos){
+	$tempArgs=array();
+	foreach ($argsPermitidos as $k=>$v){
+		$tempArgs[$k]=$v;
+	}
+	foreach ($argumentos as $arg){
+		$arg=explode("=",$arg);
+		if(array_key_exists($arg[0],$argsPermitidos)){
+			$tempArgs[$arg[0]]=$arg[1];
+		}
+	}
+	return $tempArgs;
+}
+function thumbGen_openImage ($file) {
         $im = @imagecreatefromjpeg($file);
         if ($im !== false) { return $im; }
         $im = @imagecreatefromgif($file);
@@ -139,7 +199,6 @@ function thumbgen_activation_hook() {
 register_activation_hook(__FILE__, 'thumbgen_activation_hook');
 
 function thumbgen_filter_plugin_actions( $links, $file ){
-	// Static so we don't call plugin_basename on every plugin row.
 	static $this_plugin;
 	if ( ! $this_plugin ) $this_plugin = plugin_basename(__FILE__);
 	
@@ -156,7 +215,7 @@ function thumbgen_options_page(){
 ?>
 <div class="wrap">
 	<h2>thumbGen</h2>
-	<p>This plugin creates a function named thumbGen() that allows to show any image in the specified size. It saves all generated thumbs in a cache directory.</p>
+	<p>This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.</p>
 	<p><strong>Note:</strong> Keep in mind that this plugin requires the GD2 library and permissions to write in the specified cache folder.</p>
 	<?php
 	//actualizar los datos
@@ -186,13 +245,25 @@ function thumbgen_options_page(){
 						closedir($clearCache);
 						echo "<div class='updated'><p><strong>The cache folder have been cleared</strong></p></div>";
 					}
-				}
-				else{
-					if(@mkdir($_SERVER['DOCUMENT_ROOT'].get_option('thumbgen_cache_files'))){
-						echo "<div class='updated'><p><strong>The specified folder doesn't exists</strong>. But don't worry... I've already created it ;)</p></div>";
+					
+					if(is_writable($_SERVER['DOCUMENT_ROOT'].get_option('thumbgen_cache_files'))){
+						echo "<div class='updated'><p><strong>The specified folder seems to be fine. You have configured thumbGen!</strong></p></div>";
 					}
 					else{
-						echo "<div class='error'><p><strong>The specified folder doesn't exists</strong> and I was not able to create it :(</p></div>";
+						echo "<div class='error'><p><strong>The specified folder is not writable!. Please check the folder permissions or thumbGen will not work</strong></p></div>";
+					}
+				}
+				else{
+					if($_POST['create_folder']){
+						if(@mkdir($_SERVER['DOCUMENT_ROOT'].get_option('thumbgen_cache_files'),0777)){
+							echo "<div class='updated'><p><strong>The specified folder doesn't exists</strong>. But don't worry... I've already created it ;)</p></div>";
+						}
+						else{
+							echo "<div class='error'><p><strong>The specified folder doesn't exists</strong> and I was not able to create it :(</p></div>";
+						}
+					}
+					else{
+						echo "<div class='error'><p><strong>The specified folder doesn't exist. Please check your settings or thumbGen will not work</strong></p></div>";
 					}
 				}
 			}
@@ -212,6 +283,7 @@ function thumbgen_options_page(){
 				<th scope="row">Path to store the cache files:</th>
 				<td>
 					<input type="text" class="code" size="50" value="<?php echo get_option('thumbgen_cache_files'); ?>" name="conf[cache_files]"> <span class="description">(default: "/wp-content/thumbgen_cache/")</span><br />
+					<label for="create_folder"><input type="checkbox" name="create_folder" id="create_folder" value="1" />Try to create folder if it doesn't exists</label>
 				</td>
 			</tr>
 			<tr valign="top">
