@@ -16,9 +16,9 @@ It saves all generated thumbs in a cache folder, so it won't overload your serve
 
 == Installation ==
 
-Installation
-
 Just donwload the zip file, upload it to your wordpress via install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated the plugin is ready to be used by calling its main function (see "Usage" section below).
+
+== Usage ==
 
 To use this function you just need to use this line code:
 
@@ -26,10 +26,10 @@ To use this function you just need to use this line code:
 
 [image:] the URL of the original image you need to create a thumbnail from (needed).
 
-[width:] the width you need for the generated thumbnail (optional - default=0 - if not specified it gets the 
+[width:] the width you need for the generated thumbnail (default=0 - if not specified it gets the 
 proportional value from the specified height).
 
-[height:] the height you need for the generated thumbnail (optional - default=0 - if not specified it gets the proportional value from the specified width).
+[height:] the height you need for the generated thumbnail (default=0 - if not specified it gets the proportional value from the specified width).
 
 note: if you don't specify the with AND height (or if you set both to 0), the image will be generated in the source size.
 
