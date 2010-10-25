@@ -66,6 +66,10 @@ There's no screenshots, since this function create thumbnails...how could I get 
 
 == Changelog ==
 
+= 2.5.1 =
+* Fixed a bug in the names generation (thanks beetrootman!)
+* Fixed a problem with the gif images rotation and background
+
 = 2.5 =
 * Main function updated!!! (ATTENTION, if you upgrade, maybe it will need to review your code)
 * A lot of new features: rotation, effects, background, halign, valign, etc.

@@ -4,7 +4,7 @@ Plugin Name: thumbGen
 Plugin URI: http://www.sebastianbarria.com/thumbgen/
 Description: This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists. ATTENTION: If you're upgrading from older version it will probable need you to do some fixes in the code. Please refer to the documentation at http://www.sebastianbarria.com/thumbgen/
 Author: Sebastián Barría
-Version: 2.5
+Version: 2.5.1
 Author URI: http://www.sebastianbarria.com/
 */
 
@@ -34,7 +34,7 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 	$imageExtension=strtolower($ext[count($ext)-1]);
 	if($imageExtension!="png" and $imageExtension!="gif"){ $imageExtension="jpg"; }
 	$imageName=$args['filename']?$args['filename']:substr($fileName,0,strlen($fileName)-strlen($imageExtension)-1);
-	$imageName=$imageName."_".$width."_".$height."_".implode("_",$allowedArgs);
+	$imageName=$imageName."_".$width."_".$height."_".str_replace("#","",implode("_",$args));
 	if($args['md5']==1){ $imageName=md5($imageName); }
 	$fileCache=$cachePath.$imageName.".".$imageExtension;
 	$fileCacheGS=$cachePath.$imageName.".".$imageExtension;
@@ -48,13 +48,27 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 		}
 		else{
 			if($args['rotate']){
-				if($args['background']!="transparent"){
-					$bgColor=thumbGen_hexToRGB($args['background']);
-					$bg = imagecolorallocatealpha($image, $bgColor[0], $bgColor[1], $bgColor[2], 127);
-					$image=imagerotate($image,$args['rotate'],$bg);
+				if($imageExtension=="png"){
+					if($args['background']!="transparent"){
+						$bgColor=thumbGen_hexToRGB($args['background']);
+						$bg = imagecolorallocatealpha($image, $bgColor[0], $bgColor[1], $bgColor[2], 0);
+						$image=imagerotate($image,$args['rotate'],$bg);
+					}
+					else{
+						$bg = imagecolorallocatealpha($image, 255, 255, 255, 127);
+						$image=imagerotate($image,$args['rotate'],-1);
+					}
 				}
 				else{
-					$image=imagerotate($image,$args['rotate'],-1);
+					if($args['background']!="transparent"){
+						$bgColor=thumbGen_hexToRGB($args['background']);
+					}
+					else{
+						$bgColor=thumbGen_hexToRGB('#f0f');
+						$bg = imagecolorallocatealpha($image,$bgColor[0],$bgColor[1],$bgColor[2],127);
+						$image=imagerotate($image,$args['rotate'],$bg);
+						imagecolortransparent($image,$bg);
+					}
 				}
 			}
 		}
@@ -72,6 +86,7 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 			
 		$newProportion=$width/$height;
 		$originalProportion=$x/$y;
+				
 		if($args['crop']){
 			if($newProportion>$originalProportion){
 				$px=$x;
