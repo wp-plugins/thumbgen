@@ -16,7 +16,7 @@ It saves all generated thumbs in a cache folder, so it won't overload your serve
 
 == Installation ==
 
-Just donwload the zip file, upload it to your wordpress via install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated the plugin is ready to be used by calling its main function (see "Usage" section below).
+Just donwload the zip file, upload it to your wordpress via install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated se the main folder and default iage (in settings/thumbGen) and the plugin is ready to be used by calling its main function (see "Usage" section below).
 
 == Usage ==
 
@@ -58,7 +58,7 @@ note: if you don't specify the with AND height (or if you set both to 0), the im
 
 = Where do I get more information? =
 
-[In the plugin page](http://www.sebastianbarria.com/thumbgen/ "Your favorite software")
+[In the plugin page](http://www.sebastianbarria.com/thumbgen/ "thumbGen")
 
 == Screenshots ==
 
