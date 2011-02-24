@@ -3,7 +3,7 @@ Contributors: sebastianbarria
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A799JB6J57938
 Tags: image,images,thumb,generator,thumbnail,developers,cache
 Requires at least: 2.9.0
-Tested up to: 3.0.1
+Tested up to: 3.1
 Stable tag: trunk
 
 This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists. ATTENTION: If you're upgrading from older version it will probable need you to do some fixes in the code. Please refer to the documentation at http://www.sebastianbarria.com/thumbgen/
@@ -65,6 +65,10 @@ note: if you don't specify the with AND height (or if you set both to 0), the im
 There's no screenshots, since this function create thumbnails...how could I get a screenshot of that?
 
 == Changelog ==
+
+= 2.5.2 =
+* Minor fixes
+* Fix in the control panel to save a default image
 
 = 2.5.1 =
 * Fixed a bug in the names generation (thanks beetrootman!)
