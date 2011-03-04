@@ -2,9 +2,9 @@
 /*
 Plugin Name: thumbGen
 Plugin URI: http://www.sebastianbarria.com/plugins/thumbgen/
-Description: This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists. ATTENTION: If you're upgrading from older version it will probable need you to do some fixes in the code. Please refer to the documentation at http://www.sebastianbarria.com/thumbgen/
+Description: This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.
 Author: Sebastián Barría
-Version: 2.5.2
+Version: 2.5.3
 Author URI: http://www.sebastianbarria.com/
 */
 
@@ -26,7 +26,7 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 
 	$sitePath=$_SERVER['DOCUMENT_ROOT'];
 	$cachePath=get_option('thumbgen_cache_files');
-	$defultImage=get_option('thumbgen_default_image');
+	$defaultImage=get_option('thumbgen_default_image');
 	
 	$file=explode("/",$img);
 	$fileName=$file[count($file)-1];
@@ -43,8 +43,11 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 		$openImage=substr($img,0,1)=="/"?$sitePath.$img:$img;
 		$image = thumbGen_openImage($openImage);
 		if(!$image){
-			if($defultImage){ $image = thumbGen_openImage($defultImage); }
-			else{ $image = imagecreatetruecolor($width, $height);}
+			if($defaultImage){
+				$defaultImage=substr($defaultImage,0,1)=="/"?$sitePath.$defaultImage:$defaultImage;
+				$image = thumbGen_openImage($defaultImage);
+			}
+			if(!$image){ $image = imagecreatetruecolor($width, $height);}
 		}
 		else{
 			if($args['rotate']){
@@ -84,14 +87,14 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 		if(!$height){ $percentage=$width*100/$x; $height=round($percentage*$y/100); }
 		if(!$width and !$height){ $width=$x; $height=$y; }
 			
-		$newProportion=$width/$height;
-		$originalProportion=$x/$y;
+		@$newProportion=$width/$height;
+		@$originalProportion=$x/$y;
 				
 		if($args['crop']){
 			if($newProportion>$originalProportion){
 				$px=$x;
-				$percentage=$width*100/$x;
-				$py=round($height/$percentage*100);
+				@$percentage=$width*100/$x;
+				@$py=round($height/$percentage*100);
 			}
 			else if($newProportion==$originalProportion){
 				$px=$x;
@@ -99,8 +102,8 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 			}
 			else{
 				$py=$y;
-				$percentage=$height*100/$y;
-				$px=round($width/$percentage*100);
+				@$percentage=$height*100/$y;
+				@$px=round($width/$percentage*100);
 			}
 			
 			//alignment	
@@ -128,7 +131,7 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 				imagecolortransparent($newImage,$bg);
 			}
 		}
-		imagecopyresampled($newImage, $image, 0, 0, $offsetx, $offsety, $width, $height, $px, $py);
+		@imagecopyresampled($newImage, $image, 0, 0, $offsetx, $offsety, $width, $height, $px, $py);
 		if($imageExtension=="png"){ imagepng($newImage,$sitePath.$fileCache,7); }
 		else if($imageExtension=="gif"){ imagegif($newImage,$sitePath.$fileCache); }
 		else{ imagejpeg($newImage,$sitePath.$fileCache,90); }
@@ -306,7 +309,7 @@ function thumbgen_options_page(){
 				<th scope="row">Path to the default image:</th>
 				<td>
 					<input type="text" class="code" size="50" value="<?php echo get_option('thumbgen_default_image'); ?>" name="conf[default_image]"><br />
-					<small class="description">Use an absolute URL like /wp-content/themes/mytheme/no-image.jpg or http://www.mysite.com/wp-content/themes/mytheme/no-image.jpg<br />This one will be used if the requested image can't be found.<br />If you don't specify this image, the generated thumbnail will be a white image.</small>
+					<small class="description">Use an absolute URL like /wp-content/themes/mytheme/no-image.jpg or http://www.mysite.com/wp-content/themes/mytheme/no-image.jpg<br />This one will be used if the requested image can't be found.<br />If you don't specify this image, the generated thumbnail will be a black image.</small>
 				</td>
 			</tr>
 			<tr valign="top">

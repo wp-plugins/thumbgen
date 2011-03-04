@@ -6,11 +6,13 @@ Requires at least: 2.9.0
 Tested up to: 3.1
 Stable tag: trunk
 
-This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists. ATTENTION: If you're upgrading from older version it will probable need you to do some fixes in the code. Please refer to the documentation at http://www.sebastianbarria.com/thumbgen/
+This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.
 
 == Description ==
 
-This plugin is made for developers. It creates a function named thumbGen() that allows to show any image in the specified size. Additionally you can specify values like crop, center, rotation and effects.
+This plugin is made for developers.
+
+It creates a function named thumbGen() that allows to show any image in the specified size. Additionally you can specify values like crop, center, rotation and effects.
 
 It saves all generated thumbs in a cache folder, so it won't overload your server at all.
 
@@ -66,9 +68,13 @@ There's no screenshots, since this function create thumbnails...how could I get 
 
 == Changelog ==
 
+= 2.5.3 =
+* Minor fixes
+* Avoid showing errors. This way the plugin will allways show an image (black or default)
+
 = 2.5.2 =
 * Minor fixes
-* Fix in the control panel to save a default image
+* Fixed the control panel to be able to set a default image
 
 = 2.5.1 =
 * Fixed a bug in the names generation (thanks beetrootman!)
