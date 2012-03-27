@@ -4,7 +4,7 @@ Plugin Name: thumbGen
 Plugin URI: http://www.sebastianbarria.com/plugins/thumbgen/
 Description: This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.
 Author: Sebastián Barría
-Version: 2.5.4
+Version: 2.5.5
 Author URI: http://www.sebastianbarria.com/
 */
 
@@ -13,17 +13,27 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 		"filename"=>"", //if you want to specify a new filename (in case of conflict with similar filenames)
 		"md5"=>"1", //1,0 if you don't want the generated file to have an encoded name set this to 0
 		"force"=>"0", //1,0 force thumb creation, even if it exists (NOT RECOMENDED! - use it just for debugging)
-		"crop"=>"1", //1,0
+		"crop"=>"1", //1=true(auto crops the image); 0=false(don't crop the image)
 		"halign"=>"center", //left,center,right
 		"valign"=>"center", //top,center,bottom
 		"effect"=>"", //grayscale,sephia
 		"rotate"=>"0", //0-360
 		"background"=>"transparent", //background color for use when the image is rotated
-		"return"=>"0", //1,0
+		"return"=>"0", //1=true(returns the image URL instead of echoing); 0=false(echoes the image URL)
 	);
 	$arguments=explode("&",$arguments);
 	$args=thumbGen_setupAllowedArguments($allowedArgs,$arguments);
 
+	if(!isset($_SERVER['DOCUMENT_ROOT'])){
+		if(isset($_SERVER['SCRIPT_FILENAME'])){
+			$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr($_SERVER['SCRIPT_FILENAME'], 0, 0-strlen($_SERVER['PHP_SELF'])));
+		};
+	};
+	if(!isset($_SERVER['DOCUMENT_ROOT'])){
+		if(isset($_SERVER['PATH_TRANSLATED'])){
+			$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED']), 0, 0-strlen($_SERVER['PHP_SELF'])));
+		};
+	};
 	$sitePath=$_SERVER['DOCUMENT_ROOT'];
 	$cachePath=get_option('thumbgen_cache_files');
 	$defaultImage=get_option('thumbgen_default_image');
@@ -174,13 +184,13 @@ function thumbGen_setupAllowedArguments($argsPermitidos,$argumentos){
 	return $tempArgs;
 }
 function thumbGen_openImage ($file) {
-        $im = @imagecreatefromjpeg($file);
-        if ($im !== false) { return $im; }
-        $im = @imagecreatefromgif($file);
-        if ($im !== false) { return $im; }
-        $im = @imagecreatefrompng($file);
-        if ($im !== false) { return $im; }
-        return false;
+	$im = @imagecreatefromjpeg($file);
+	if ($im !== false) { return $im; }
+	$im = @imagecreatefromgif($file);
+	if ($im !== false) { return $im; }
+	$im = @imagecreatefrompng($file);
+	if ($im !== false) { return $im; }
+	return false;
 }
 ?>
 <?php
@@ -274,7 +284,7 @@ function thumbgen_options_page(){
 				}
 				else{
 					if($_POST['create_folder']){
-						if(@mkdir($_SERVER['DOCUMENT_ROOT'].get_option('thumbgen_cache_files'),0777)){
+						if(@mkdir($_SERVER['DOCUMENT_ROOT'].get_option('thumbgen_cache_files'),0755)){
 							echo "<div class='updated'><p><strong>The specified folder doesn't exists</strong>. But don't worry... I've already created it ;)</p></div>";
 						}
 						else{

@@ -68,6 +68,9 @@ There's no screenshots, since this function create thumbnails...how could I get 
 
 == Changelog ==
 
+= 2.5.5 =
+* Added a fix for $_SERVER['REMOTE_ADDR'] on some windows servers (thanks Samuelm)
+
 = 2.5.4 =
 * Added the image width and height (original and new) when the output is set to "return"
 
