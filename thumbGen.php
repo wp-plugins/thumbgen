@@ -4,7 +4,7 @@ Plugin Name: thumbGen
 Plugin URI: http://www.sebastianbarria.com/plugins/thumbgen/
 Description: This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.
 Author: Sebastián Barría
-Version: 2.5.5
+Version: 2.5.6
 Author URI: http://www.sebastianbarria.com/
 */
 
