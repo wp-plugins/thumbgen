@@ -50,7 +50,8 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 	$fileCacheGS=$cachePath.$imageName.".".$imageExtension;
 	
 	if(!is_readable($sitePath.$fileCache) or $args['force']){
-		$openImage=substr($img,0,1)=="/"?$sitePath.$img:$img;
+		$openImage=preg_match('/^(http|ftp|https)\:\/\/'.addslashes($_SERVER['HTTP_HOST']).'/i',$img)?preg_replace('/^(http|ftp|https)\:\/\/'.addslashes($_SERVER['HTTP_HOST']).'/i',"",$img):$img;
+		$openImage=substr($openImage,0,1)=="/"?$sitePath.$openImage:$openImage;
 		$image = thumbGen_openImage($openImage);
 		if(!$image){
 			if($defaultImage){
