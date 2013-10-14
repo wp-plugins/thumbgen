@@ -4,10 +4,9 @@ Plugin Name: thumbGen
 Plugin URI: http://www.sebastianbarria.com/plugins/thumbgen/
 Description: This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.
 Author: Sebastián Barría
-Version: 2.5.6
+Version: 2.6
 Author URI: http://www.sebastianbarria.com/
 */
-
 function thumbGen($img="",$width=0,$height=0,$arguments=""){
 	$allowedArgs=array(
 		"filename"=>"", //if you want to specify a new filename (in case of conflict with similar filenames)
@@ -20,26 +19,20 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 		"rotate"=>"0", //0-360
 		"background"=>"transparent", //background color for use when the image is rotated
 		"return"=>"0", //1=true(returns the image URL instead of echoing); 0=false(echoes the image URL)
+		"preserveAnimation"=>"1", //force to preserve animation (all other args won't work)
+		"quality"=>"7" //0-9
 	);
 	$arguments=explode("&",$arguments);
 	$args=thumbGen_setupAllowedArguments($allowedArgs,$arguments);
-
-	if(!isset($_SERVER['DOCUMENT_ROOT'])){
-		if(isset($_SERVER['SCRIPT_FILENAME'])){
-			$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr($_SERVER['SCRIPT_FILENAME'], 0, 0-strlen($_SERVER['PHP_SELF'])));
-		};
-	};
-	if(!isset($_SERVER['DOCUMENT_ROOT'])){
-		if(isset($_SERVER['PATH_TRANSLATED'])){
-			$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED']), 0, 0-strlen($_SERVER['PHP_SELF'])));
-		};
-	};
-	$sitePath=$_SERVER['DOCUMENT_ROOT'];
+	if(!is_numeric($args['quality']) or $args['quality']<0 or $args['quality']>9){ $args['quality']=7; }
+	
+	$sitePath=ABSPATH;
 	$cachePath=get_option('thumbgen_cache_files');
 	$defaultImage=get_option('thumbgen_default_image');
 	
 	$file=explode("/",$img);
 	$fileName=$file[count($file)-1];
+	$img=str_replace($img,rawurldecode($img),$img);
 	$ext=explode(".",$fileName);
 	$imageExtension=strtolower($ext[count($ext)-1]);
 	if($imageExtension!="png" and $imageExtension!="gif"){ $imageExtension="jpg"; }
@@ -49,6 +42,13 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 	$fileCache=$cachePath.$imageName.".".$imageExtension;
 	$fileCacheGS=$cachePath.$imageName.".".$imageExtension;
 	
+	if($imageExtension=="gif" and $args['preserveAnimation']){
+		$animado=thumbGen_isAnimation($img);
+		if($animado){
+			copy($img,$_SERVER['DOCUMENT_ROOT'].$fileCache)?1:0;
+		}
+	}
+
 	if(!is_readable($sitePath.$fileCache) or $args['force']){
 		$openImage=preg_match('/^(http|ftp|https)\:\/\/'.addslashes($_SERVER['HTTP_HOST']).'/i',$img)?preg_replace('/^(http|ftp|https)\:\/\/'.addslashes($_SERVER['HTTP_HOST']).'/i',"",$img):$img;
 		$openImage=substr($openImage,0,1)=="/"?$sitePath.$openImage:$openImage;
@@ -58,7 +58,14 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 				$defaultImage=substr($defaultImage,0,1)=="/"?$sitePath.$defaultImage:$defaultImage;
 				$image = thumbGen_openImage($defaultImage);
 			}
-			if(!$image){ $image = imagecreatetruecolor($width, $height);}
+			if(!$image){
+				$widthTemp=$width;
+				$heightTemp=$height;
+				if(!$widthTemp and !$heightTemp){ $widthTemp=300; $heightTemp=300; }
+				else if(!$widthTemp){ $widthTemp=$heightTemp; }
+				else if(!$heightTemp){ $heightTemp=$widthTemp; }
+				$image = imagecreatetruecolor($widthTemp, $heightTemp);
+			}
 		}
 		else{
 			if($args['rotate']){
@@ -143,9 +150,9 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 			}
 		}
 		@imagecopyresampled($newImage, $image, 0, 0, $offsetx, $offsety, $width, $height, $px, $py);
-		if($imageExtension=="png"){ imagepng($newImage,$sitePath.$fileCache,7); }
+		if($imageExtension=="png"){ imagepng($newImage,$sitePath.$fileCache,9-$args['quality']); }
 		else if($imageExtension=="gif"){ imagegif($newImage,$sitePath.$fileCache); }
-		else{ imagejpeg($newImage,$sitePath.$fileCache,90); }
+		else{ imagejpeg($newImage,$sitePath.$fileCache,$args['quality']*100); }
 		if($args['effect']=="grayscale" or $args['effect']=="sephia"){
 			imagefilter($newImage,IMG_FILTER_GRAYSCALE);
 			if($args['effect']=="sephia"){ imagefilter($newImage,IMG_FILTER_COLORIZE,100,50,0); }
@@ -160,6 +167,39 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 
 	if(!$args['return']){ echo $fileCache; }
 	else{ return $fileCache."?originalWidth=$x&originalHeight=$y&newWidth=$width&newHeight=$height"; }
+}
+function thumbGen_isAnimation($filename){
+	$filecontents=file_get_contents($filename);
+	
+	$str_loc=0;
+	$count=0;
+	while ($count < 2){
+		$where1=strpos($filecontents,"\x00\x21\xF9\x04",$str_loc);
+		if($where1 === FALSE){
+			break;
+		}
+		else{
+			$str_loc=$where1+1;
+			$where2=strpos($filecontents,"\x00\x2C",$str_loc);
+			if($where2 === FALSE){
+				break;
+			}
+			else{
+				if($where1+8 == $where2){
+					$count++;
+				}
+				$str_loc=$where2+1;
+
+			}
+		}
+	}
+	
+	if ($count>1){
+		return(true);
+	}
+	else{
+		return(false);
+	}
 }
 function thumbGen_hexToRGB($color){
 	if ($color[0] == '#'){ $color = substr($color, 1); }
@@ -211,7 +251,7 @@ function myplugin_update_options($options){
 add_action('admin_menu', 'add_thumbgen_admin');
 function add_thumbgen_admin() {
 	global $wpdb;
-	add_options_page('thumbGen', 'thumbGen', 10, 'thumbGen', 'thumbgen_options_page');
+	add_options_page('thumbGen', 'thumbGen', 'edit_pages', 'thumbGen', 'thumbgen_options_page');
 }
 
 //set the default values on activation

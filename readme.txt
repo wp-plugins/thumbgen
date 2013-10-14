@@ -3,7 +3,7 @@ Contributors: sebastianbarria
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A799JB6J57938
 Tags: image,images,thumb,generator,thumbnail,developers,cache
 Requires at least: 2.9.0
-Tested up to: 3.3.2
+Tested up to: 3.6.1
 Stable tag: trunk
 
 This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.
@@ -56,6 +56,10 @@ note: if you don't specify the with AND height (or if you set both to 0), the im
 
 [return:] if set to 1 (or true) the image name will be returned instead of printed (default=0).
 
+[preserveAnimation:] if set to 1 (or true) it will show animated gif's with motion but without applying other parameters. Otherwise, it will show the first frame of the animated gif resized.
+
+[quality:] you can chooos from 0 to 9, where 0 is the worst quality (lower file size) and 9 is the best (bigger file size). The default value is 7.
+
 == Frequently Asked Questions ==
 
 = Where do I get more information? =
@@ -68,49 +72,55 @@ There's no screenshots, since this function create thumbnails...how could I get 
 
 == Changelog ==
 
+= 2.6 =
+* FIXED: Problem with the routes when the blog is inside a folder instead of the root (thanks to @atorresg)
+* FIXED: Problem when opening files with strange characters (thanks to @javiarques)
+* ADDED: New argument "preserveAnimation" to show animated gifs (when using this, all other args won't work)
+* ADDED: New argument "quality" to select the output quality (from 0: worst quality to 9: best quality). This work equally for jpg and png format
+
 = 2.5.6 =
-* Adapted the image URL to open: if it starts with the same HTTP_HOST, it is removed from the image URL. This fixes errors on some blocked servers
+* IMPROVED: Adapted the image URL to open: if it starts with the same HTTP_HOST, it is removed from the image URL. This fixes errors on some blocked servers
 
 = 2.5.5 =
-* Added a fix for $_SERVER['REMOTE_ADDR'] on some windows servers (thanks Samuelm)
+* ADDED: A fix for $_SERVER['REMOTE_ADDR'] on some windows servers (thanks Samuelm)
 
 = 2.5.4 =
-* Added the image width and height (original and new) when the output is set to "return"
+* ADDED: The image width and height (original and new) when the output is set to "return"
 
 = 2.5.3 =
-* Minor fixes
-* Avoid showing errors. This way the plugin will allways show an image (black or default)
+* FIXED: Minor fixes
+* IMPROVED: Avoid showing errors. This way the plugin will allways show an image (black or default)
 
 = 2.5.2 =
-* Minor fixes
-* Fixed the control panel to be able to set a default image
+* FIXED: Minor fixes
+* FIXED: The control panel to be able to set a default image
 
 = 2.5.1 =
-* Fixed a bug in the names generation (thanks beetrootman!)
-* Fixed a problem with the gif images rotation and background
+* FIXED: A bug in the names generation (thanks beetrootman!)
+* FIXED: A problem with the gif images rotation and background
 
 = 2.5 =
-* Main function updated!!! (ATTENTION, if you upgrade, maybe it will need to review your code)
-* A lot of new features: rotation, effects, background, halign, valign, etc.
-* The images are now generated with a md5 encoded name by default
-* A new option to force image generation (use only for testing)
-* New option in the config page. Now it ask you if you want to create the folder (if it not exists) instead of just creating
-* Improved check for the selected cache folder in the config page
-* Internal functions renamed to thumbGen_function() for it not to cause problem with other plugins
+* IMPROVED: Main function updated!!! (ATTENTION, if you upgrade, maybe it will need to review your code)
+* IMPROVED: check for the selected cache folder in the config page
+* MODIFIED: The images are now generated with a md5 encoded name by default
+* MODIFIED: functions renamed to thumbGen_function() for it not to cause problem with other plugins
+* ADDED: A lot of new features: rotation, effects, background, halign, valign, etc.
+* ADDED: A new option to force image generation (use only for testing)
+* ADDED: New option in the config page. Now it ask you if you want to create the folder (if it not exists) instead of just creating
 
 = 2.1 =
-* Documentation updated
-* Donation button added (try it!)
+* IMPROVED: Documentation updated
+* ADDED: Donation button added (try it!)
 
 = 2.0 =
-* New settings page!!!
-* Cache folder specification (if not exist, the plugin creates it)
-* Clear cache option
-* Default image specification (to show if the image doesn't exists)
-* thumGen is able to open files from anywhere (your own site and from other ones too!)
-* Full support for image transparency
-* Is not required to send any parameter other than the image name (all have default values)
-* New parameter "return", to select if the image name is printed or returned
+* IMPROVED: Is not required to send any parameter other than the image name (all have default values)
+* ADDED: New settings page!!!
+* ADDED: Cache folder specification (if not exist, the plugin creates it)
+* ADDED: Clear cache option
+* ADDED: Default image specification (to show if the image doesn't exists)
+* ADDED: thumGen is able to open files from anywhere (your own site and from other ones too!)
+* ADDED: Full support for image transparency
+* ADDED: New parameter "return", to select if the image name is printed or returned
 
 = 1.0 =
 * This is the first release
