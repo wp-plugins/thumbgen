@@ -64,7 +64,7 @@ note: if you don't specify the with AND height (or if you set both to 0), the im
 
 = Where do I get more information? =
 
-[In the plugin page](http://www.sebastianbarria.com/thumbgen/ "thumbGen")
+[In the plugin page](http://www.sebastianbarria.com/plugins/thumbgen/ "thumbGen")
 
 == Screenshots ==
 
