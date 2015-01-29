@@ -3,7 +3,7 @@ Contributors: sebastianbarria
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A799JB6J57938
 Tags: image,images,thumb,generator,thumbnail,developers,cache
 Requires at least: 2.9.0
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: trunk
 
 This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.
@@ -18,7 +18,7 @@ It saves all generated thumbs in a cache folder, so it won't overload your serve
 
 == Installation ==
 
-Just donwload the zip file, upload it to your wordpress via install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated se the main folder and default iage (in settings/thumbGen) and the plugin is ready to be used by calling its main function (see "Usage" section below).
+Just donwload the zip file, upload it to your wordpress via install plugins page (or uncompress it to your wordpress wp-content/plugins/ folder) and activate it. Once activated se the main folder and default image (in settings/thumbGen) and the plugin is ready to be used by calling its main function (see "Usage" section below).
 
 == Usage ==
 
@@ -71,6 +71,10 @@ note: if you don't specify the with AND height (or if you set both to 0), the im
 There's no screenshots, since this function create thumbnails...how could I get a screenshot of that?
 
 == Changelog ==
+
+= 2.7 =
+* FIXED: Problem with black when using with Wordpress on folders (now is working on multisite installations and Wordpress installed in the root or folders)
+* IMPROVED: Minor code changes
 
 = 2.6.1 =
 * FIXED: Problem with the multisite installation (thanks to Samuel Arendt)
