@@ -72,6 +72,9 @@ There's no screenshots, since this function create thumbnails...how could I get 
 
 == Changelog ==
 
+= 2.7.1 =
+* IMPROVED: better compatibility with older installations (refering to the black images problem)
+
 = 2.7 =
 * FIXED: Problem with black when using with Wordpress on folders (now is working on multisite installations and Wordpress installed in the root or folders)
 * IMPROVED: Minor code changes

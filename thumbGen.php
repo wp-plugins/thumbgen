@@ -4,7 +4,7 @@ Plugin Name: thumbGen
 Plugin URI: http://www.sebastianbarria.com/plugins/thumbgen/
 Description: This plugin creates a function named thumbGen() that allows to show any image in the specified size (plus many other things). It saves every generated thumbs in a cache directory, so it will not re-generate the thumb if it already exists.
 Author: Sebastián Barría
-Version: 2.7
+Version: 2.7.1
 Author URI: http://www.sebastianbarria.com/
 */
 
@@ -51,12 +51,12 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 		if(!is_readable($folders["sitePath"].$fileCache) or $args['force']){
 			if(preg_match('/^(http|ftp|https)\:\/\/' . addslashes($_SERVER['HTTP_HOST']) . '/i', $img)){
 				$uploads = wp_upload_dir();
+				print_r($uploads);
 				$openImage = str_replace($uploads['baseurl'], $uploads['basedir'], $img);
 			}
 			else{
 				$openImage = $img;
 			}
-			$openImage=substr($openImage,0,1)=="/"?$folders["sitePath"].$openImage:$openImage;
 			$image = thumbGen_openImage($openImage);
 			if(!$image){
 				if($defaultImage){
