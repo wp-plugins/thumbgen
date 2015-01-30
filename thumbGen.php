@@ -51,7 +51,6 @@ function thumbGen($img="",$width=0,$height=0,$arguments=""){
 		if(!is_readable($folders["sitePath"].$fileCache) or $args['force']){
 			if(preg_match('/^(http|ftp|https)\:\/\/' . addslashes($_SERVER['HTTP_HOST']) . '/i', $img)){
 				$uploads = wp_upload_dir();
-				print_r($uploads);
 				$openImage = str_replace($uploads['baseurl'], $uploads['basedir'], $img);
 			}
 			else{
